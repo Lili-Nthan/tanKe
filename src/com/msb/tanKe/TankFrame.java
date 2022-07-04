@@ -2,6 +2,8 @@ package com.msb.tanKe;
 
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -13,8 +15,9 @@ public class TankFrame extends Frame {
         setSize(800, 600);
         setResizable(false);
         setTitle("坦克大战");
-
         setVisible(true);
+
+        this.addKeyListener(new MyKeyListener());
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -28,5 +31,19 @@ public class TankFrame extends Frame {
         g.fillRect(x, y, 50, 50);
         x += 10;
         y += 10;
+    }
+
+    class MyKeyListener extends KeyAdapter{
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            x += 20;
+            repaint();
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            System.out.println("key released");
+        }
     }
 }
