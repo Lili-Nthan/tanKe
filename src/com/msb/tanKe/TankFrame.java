@@ -1,7 +1,6 @@
 package com.msb.tanKe;
 
-import java.awt.Frame;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -10,11 +9,12 @@ import java.awt.event.WindowEvent;
 public class TankFrame extends Frame {
 
     int x = 200, y = 200;
-    Tank myTank = new Tank(200,200,Dir.DOWN);
-    Bullet bullet = new Bullet(300,300,Dir.DOWN);
+    Tank myTank = new Tank(200, 200, Dir.DOWN,this);
+    Bullet bullet = new Bullet(300, 300, Dir.DOWN);
+    static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
 
     public TankFrame() {
-        setSize(800, 600);
+        setSize(GAME_WIDTH, GAME_HEIGHT);
         setResizable(false);
         setTitle("坦克大战");
         setVisible(true);
@@ -28,10 +28,28 @@ public class TankFrame extends Frame {
         });
     }
 
+    /**
+     * 双缓冲
+     */
+    Image offScreenImage = null;
+    @Override
+    public void update(Graphics g) {
+        if (offScreenImage == null) {
+            offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
+        }
+        Graphics gOffScreen = offScreenImage.getGraphics();
+        Color c = gOffScreen.getColor();
+        gOffScreen.setColor(Color.BLACK);
+        gOffScreen.fillRect(0,0,GAME_WIDTH,GAME_HEIGHT);
+        gOffScreen.setColor(c);
+        paint(gOffScreen);
+        g.drawImage(offScreenImage,0,0,null);
+    }
+
     @Override
     public void paint(Graphics g) {
-       myTank.paint(g);
-       bullet.paint(g);
+        myTank.paint(g);
+        bullet.paint(g);
     }
 
     class MyKeyListener extends KeyAdapter {
@@ -57,6 +75,9 @@ public class TankFrame extends Frame {
                     break;
                 case KeyEvent.VK_DOWN:
                     bD = true;
+                    break;
+                case KeyEvent.VK_SPACE:
+                    myTank.fire();
                     break;
                 default:
                     break;
